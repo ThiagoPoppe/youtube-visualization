@@ -5,7 +5,10 @@ Repositório para o trabalho final de Visualização de Dados
 Os dados foram baixados diretamente do site Kaggle, podendo ser encontrados através desse [link](https://www.kaggle.com/datasnaek/youtube-new).
 
 ## Configuração do ambiente
-Utilize o arquivo ``requirements.txt`` para instalar todas as dependências necessárias através do comando ``pip install -r requirements.txt``.
+Utilize o arquivo ``requirements.txt`` para instalar todas as dependências necessárias através do comando:
+```bash
+pip install -r requirements.txt
+```
 
 ## Pré-processamento dos dados
 Execute o script ``preprocess.py`` passando como parâmetro o caminho para a pasta que contém os dados ``.csv`` e ``.json``.
