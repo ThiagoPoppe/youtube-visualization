@@ -12,17 +12,14 @@ def get_country(filename):
     key_name = filename.split('/')[-1]
     return key_name[:2]
 
-def get_country_encoding(country):
-    if country in ('RU', 'KR', 'JP', 'IN'):
-        return 'ISO-8859-1'
-    
-    return 'latin1' if country == 'MX' else 'utf-8'
+def preprocess(df):
+    data = df.copy()
+    data = data.dropna()
+    data['publish_time'] = data['publish_time'].apply(lambda x : x.split('T')[0])
+    data['publish_time'] = pd.to_datetime(data['publish_time'])
+    data['trending_date'] = pd.to_datetime(data['trending_date'], format='%y.%d.%m')
 
-def standarize_dates(df):
-    df['publish_time'] = pd.to_datetime(df['publish_time']).dt.normalize()
-    df['trending_date'] = pd.to_datetime(df['trending_date'], format='%y.%d.%m', utc=True)
-
-    return df
+    return data
 
 def read_category_data(filepath):
     with open(filepath, 'r') as f:
@@ -49,8 +46,8 @@ if __name__ == '__main__':
     youtube_data = {}
     for file in tqdm(csv_files):
         country = get_country(file)
-        country_data = pd.read_csv(file, encoding=get_country_encoding(country))
-        youtube_data[country] = standarize_dates(country_data)
+        country_data = pd.read_csv(file)
+        youtube_data[country] = preprocess(country_data)
 
     print('Reading category data...')
     category_data = {}
@@ -61,12 +58,19 @@ if __name__ == '__main__':
     print('Merging country and category data...')
     country_list = youtube_data.keys()
     for country in tqdm(country_list):
-        youtube_data[country] = youtube_data[country].merge(category_data[country], on=['category_id'])
+        youtube_data[country] = pd.merge(youtube_data[country], category_data[country])
     
-    basepath = ospj(args.datapath, 'processed')
-    os.makedirs(basepath, exist_ok=True)
+    output_path = 'processed/'
+    os.makedirs(output_path, exist_ok=True)
 
     print('Saving final dataframes...')
     for country in tqdm(country_list):
-        filename = ospj(basepath, f'{country}data.csv')
+        filename = ospj(output_path, f'{country}data.csv')
         youtube_data[country].to_csv(filename, index=False)
+
+    # Checking if all data was saved properly
+    print('Checking integrity of saved dataframes...')
+    for country in tqdm(country_list):
+        filename = ospj(output_path, f'{country}data.csv')
+        df = pd.read_csv(filename, parse_dates=['trending_date', 'publish_time'])
+        assert youtube_data[country].equals(df)
