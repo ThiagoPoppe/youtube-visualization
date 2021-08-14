@@ -1,0 +1,11 @@
+## Para criar o enviroment do projeto no seu computador:
+$ conda env create -f dash-env.yml
+
+## Para ativar o enviroment:
+$ conda activate dash-env
+
+## Para desativar o enviroment:
+$ conda deactivate
+
+## Para rodar o dash:
+$ python index.py
