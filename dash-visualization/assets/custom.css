@@ -1,0 +1,23 @@
+.nav-pills .nav-link.active {
+    color: #fff;
+    background-color: #ff0000;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ff0000;
+    text-decoration: none;
+}
+
+.paragrafo_home {
+    color: red;
+}
+
+.link_texto {
+    color: #212121;
+    text-decoration: underline;
+}

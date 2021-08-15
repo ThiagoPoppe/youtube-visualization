@@ -1,22 +1,17 @@
-from os.path import join as ospj
-
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
 import pathlib
-from app import app
 
 import plotly.graph_objects as go
-import plotly
 
 # Insira aqui o caminho para os dados processados!
 #BASEPATH = './'
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
+
+PREFIX_TITLE = 'Métrica selecionada: '
 
 us_data = pd.read_csv(DATA_PATH.joinpath("USdata.csv"), parse_dates=['trending_date', 'publish_time'])
 
@@ -42,8 +37,10 @@ def get_visibility(idx, n=8, n_categories=16):
 
 
 ## Criando trace para cada plot (serão 8 pares (mode, metric) no total)
+## Para termos as barras ordenadas pelo nome das categorias, devemos inserir
+## as categorias de trás para frente
 traces = []
-categories = sorted(us_data['category_name'].unique())
+categories = sorted(us_data['category_name'].unique())[::-1]
 
 for mode in modes:
     for metric in metrics:
@@ -56,9 +53,6 @@ for mode in modes:
                 y = data[metric] if mode == 'linear' else np.log10(1+data[metric]),
                 visible = True if mode == 'linear' and metric == 'views' else False
             ))
-            
-fig = go.Figure(data=traces[::-1])
-
 
 ## Definindo botões para filtro 
 idx = 0    
@@ -69,29 +63,49 @@ for mode in modes:
         buttons.append({
             'label': f'{metric} - {mode}',
             'method': 'update',
-            'args': [{'visible': get_visibility(idx)}]
+            'args': [
+                dict(visible=get_visibility(idx)),
+                dict(title=dict(
+                    x=0.015,
+                    y=0.98,
+                    font=dict(size=20),
+                    text=PREFIX_TITLE + metric,
+                ))
+            ]
         })
         
         idx += 1
 
-fig.update_layout(updatemenus=[
-    dict(
-        x = -0.15,
-        active = 0,
-        showactive = True,
-        buttons = buttons
-    )
-])
+fig = go.Figure(data=traces)
 
 ## Definindo outras propriedades de layout
 fig.update_layout(
-    title='Somatório diário das métricas por categoria',
-    xaxis_title='trending date',
-    barmode='stack'
+    width=1200,
+    height=600,
+    title=dict(
+        x=0.015,
+        y=0.98,
+        font=dict(size=20),
+        text=PREFIX_TITLE + metrics[0],
+    ),
+    yaxis_title='Valor da métrica',
+    xaxis_title='Trending Date',
+    barmode='stack',
+
+    updatemenus=[
+         dict(
+            x=-0.1,
+            active=0,
+            showactive=True,
+            buttons=buttons
+        )
+    ]
 )
 
-    
 layout = html.Div([
-    html.H1('Somatório diário das métricas por categoria', style={"textAlign": "center"}),
-    dcc.Graph(id='my-graph', figure=fig),
+    html.H3('Somatório diário das métricas por categoria'),
+    html.P('Selecione uma métrica e escala'),
+    html.Div([
+        dcc.Graph(id='sumario-metricas', figure=fig)
+    ], style={'display': 'inline-block', 'vertical-align': 'middle'})
 ])

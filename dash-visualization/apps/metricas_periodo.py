@@ -90,6 +90,7 @@ def display_fig1():
         title='Número de vídeos em trend por dia da semana',
         updatemenus=[
             dict(
+                x=0.16,
                 active=0,
                 buttons=list([
                     dict(
@@ -177,6 +178,7 @@ def display_fig2():
         title='Número de vídeos em trend por dia do mês',
         updatemenus=[
             dict(
+                x=0.16,
                 active=0,
                 buttons=list([
                     dict(
@@ -297,8 +299,8 @@ def display_fig3():
     return fig
 
 layout = html.Div([
-    html.H1('Métricas por período', style={"textAlign": "center"}),
-    dcc.Graph(id='my-graph', figure=display_fig1()),
-    dcc.Graph(id='my-graph', figure=display_fig2()),
-    dcc.Graph(id='my-graph', figure=display_fig3()),
+    html.H3('Métricas por período', style={"textAlign": "center"}),
+    dcc.Graph(id='radar-dia-semana', figure=display_fig1()),
+    dcc.Graph(id='radar-dia-mes', figure=display_fig2()),
+    dcc.Graph(id='linhas-mes-ano', figure=display_fig3())
 ])

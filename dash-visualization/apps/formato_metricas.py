@@ -1,22 +1,17 @@
-from os.path import join as ospj
-
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
 import pathlib
-from app import app
 
 import plotly.graph_objects as go
-import plotly
 
 # Insira aqui o caminho para os dados processados!
 #BASEPATH = './'
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
+
+PREFIX_TITLE = 'Vídeos da categoria: '
 
 us_data = pd.read_csv(DATA_PATH.joinpath("USdata.csv"), parse_dates=['trending_date', 'publish_time'])
 
@@ -43,24 +38,48 @@ def display_fig():
     fig = go.Figure(data=traces)
 
     fig.update_layout(
-        title='Métricas dos vídeos dos Estados Unidos',
+        width=1200,
+        height=600,
+        title=dict(
+            x=0.015,
+            y=0.98,
+            font=dict(size=20),
+            text=PREFIX_TITLE + categories[0],
+        ),
+
         updatemenus=[
             dict(
+                x=-0.05,
                 active=0,
                 showactive=True,
                 buttons=list([
-                    dict(label=categories[i], method='update', args=[{'visible': visibilites[i]}])
+                    dict(
+                        label=categories[i],
+                        method='update',
+                        args=[
+                            dict(visible=visibilites[i]),
+                            dict(
+                                title=dict(
+                                    x=0.015,
+                                    y=0.98,
+                                    font=dict(size=20),
+                                    text=PREFIX_TITLE + categories[i],
+                                ),
+                            )
+                        ]
+                    )
                     for i in range(0, len(categories))
                 ]),
-                x=1.4
             ),
         ]
     )
 
-    # fig.show()
     return fig
     
 layout = html.Div([
-    html.H1('Métricas dos vídeos dos Estados Unidos', style={"textAlign": "center"}),
-    dcc.Graph(id='my-graph', figure=display_fig()),
+    html.H3('Métricas dos vídeos'),
+    html.P('Selecione uma categoria'),
+    html.Div([
+        dcc.Graph(id='formato-metricas', figure=display_fig())
+    ], style={'display': 'inline-block', 'vertical-align': 'middle'})
 ])
