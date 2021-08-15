@@ -47,7 +47,7 @@ fig.add_trace(
 fig.add_trace(
     go.Bar(
         x=category_counts.index,
-        y=np.log(1 + category_counts['trend_count']),
+        y=np.log10(1 + category_counts['trend_count']),
         marker_color=category_colors,
         name='Número de vídeos (log10)',
         visible=False

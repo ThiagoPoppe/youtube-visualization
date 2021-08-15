@@ -28,7 +28,7 @@ week_data['week_day'] = week_data['trending_date'].dt.weekday
 week_data['day_name'] = week_data['trending_date'].dt.day_name()
 
 month_data = us_data.copy()
-month_data['day'] = week_data['trending_date'].dt.day
+month_data['day'] = month_data['trending_date'].dt.day
 
 year_data = us_data.copy()
 year_data['month'] = year_data['trending_date'].dt.month
