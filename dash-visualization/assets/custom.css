@@ -21,3 +21,15 @@ a:hover {
     color: #212121;
     text-decoration: underline;
 }
+
+.texto_home {
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    margin: 40px;
+}
+
+footer {
+    text-align: center;
+    margin-left: 20rem;
+}

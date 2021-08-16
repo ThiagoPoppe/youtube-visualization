@@ -15,8 +15,5 @@ layout = html.Div([
         html.P([
             'Escolha um dos possíveis links ao lado para entrar nas páginas das visualizações.'
         ]),
-        html.Footer([
-            'Esse projeto foi desenvolvido pelos alunos: Giovanna Louzi Bellonia, João Vítor Campos Teixeira, Larissa Gomes Malagoli e Thiago Martin Poppe.'
-        ]),
-    ])
+    ], className='texto_home'),
 ])

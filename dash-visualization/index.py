@@ -58,7 +58,11 @@ sidebar = html.Div(
 
 content = html.Div(id="page-content", style=CONTENT_STYLE)
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+footer = html.Footer([
+        'Esse projeto foi desenvolvido pelos alunos: Giovanna Louzi Bellonia, João Vítor Campos Teixeira, Larissa Gomes Malagoli e Thiago Martin Poppe.'
+])
+
+app.layout = html.Div([dcc.Location(id="url"), sidebar, content, footer])
 
 @app.callback(
     Output('page-content', 'children'),
