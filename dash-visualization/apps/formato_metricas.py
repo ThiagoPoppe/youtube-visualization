@@ -6,16 +6,16 @@ import pathlib
 
 import plotly.graph_objects as go
 
+from .constants import CATEGORY_COLORS
+
 # Insira aqui o caminho para os dados processados!
 #BASEPATH = './'
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
 
-PREFIX_TITLE = 'Vídeos da categoria: '
+PREFIX_TITLE = 'Analisando vídeos da categoria: '
 
 us_data = pd.read_csv(DATA_PATH.joinpath("USdata.csv"), parse_dates=['trending_date', 'publish_time'])
-
-category_colors = [f'hsl({h},50%,50%)' for h in np.linspace(0, 360, 30)]
 
 def display_fig():
     categories = sorted(us_data['category_name'].unique())
@@ -25,7 +25,7 @@ def display_fig():
     for i in range(0, len(categories)):
         data = us_data[us_data['category_name'] == categories[i]]
         traces.append(go.Parcoords(
-            line=dict(color=category_colors[i]),
+            line=dict(color=CATEGORY_COLORS[i]),
             dimensions=[
                 dict(label='views', values=data['views']),
                 dict(label='likes', values=data['likes']),
@@ -77,8 +77,8 @@ def display_fig():
     return fig
     
 layout = html.Div([
-    html.H3('Métricas dos vídeos'),
-    html.P('Selecione uma categoria'),
+    html.H3('Formato das Métricas'),
+    html.P('Coloque aqui uma breve descrição da visualização, como interagir e insights.'),
     html.Div([
         dcc.Graph(id='formato-metricas', figure=display_fig())
     ], style={'display': 'inline-block', 'vertical-align': 'middle'})

@@ -9,8 +9,8 @@ from app import server
 
 # Connect to your app pages
 from apps import (
-    initial_page, formato_metricas, sumario_metricas,
-    trend_categoria, pequenos_multiplos, metricas_periodo
+    initial_page, visao_geral, formato_metricas, ranking_das_metricas,
+    sumario_metricas, tempo_de_trending, metricas_periodo
 )
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
@@ -42,11 +42,12 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("Trend Categoria", href="/trend_categoria", active="exact"),
+                dbc.NavLink("Visão Geral", href="/visao_geral", active="exact"),
+                dbc.NavLink("Ranking das Métricas", href="/ranking_das_metricas", active="exact"),
                 dbc.NavLink("Formato das Métricas", href="/formato_metricas", active="exact"),
                 dbc.NavLink("Sumário das Métricas", href="/sumario_metricas", active="exact"),
-                dbc.NavLink("Pequenos Múltiplos", href="/pequenos_multiplos", active="exact"),
-                dbc.NavLink("Métricas por período", href="/metricas_periodo", active="exact")
+                dbc.NavLink("Métricas por período", href="/metricas_periodo", active="exact"),
+                dbc.NavLink("Tempo de Trending", href="/tempo_de_trending", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -66,9 +67,12 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 def display_page(pathname):
     if pathname == '/':
         return initial_page.layout
+    
+    if pathname == '/visao_geral':
+        return visao_geral.layout
 
-    if pathname == '/trend_categoria':
-        return trend_categoria.layout
+    if pathname == '/ranking_das_metricas':
+        return ranking_das_metricas.layout
     
     if pathname == '/formato_metricas':
         return formato_metricas.layout
@@ -76,11 +80,11 @@ def display_page(pathname):
     if pathname == '/sumario_metricas':
         return sumario_metricas.layout
     
-    if pathname == '/pequenos_multiplos':
-        return pequenos_multiplos.layout
-    
     if pathname == '/metricas_periodo':
         return metricas_periodo.layout
+
+    if pathname == '/tempo_de_trending':
+        return tempo_de_trending.layout
 
     # If the user tries to reach a different page, return a 404 message
     else:

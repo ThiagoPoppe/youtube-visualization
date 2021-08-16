@@ -13,15 +13,14 @@ from app import app
 import plotly.graph_objects as go
 import plotly
 
+from .constants import CATEGORY_COLORS
+
 # Insira aqui o caminho para os dados processados!
 #BASEPATH = './'
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
 
 us_data = pd.read_csv(DATA_PATH.joinpath("USdata.csv"), parse_dates=['trending_date', 'publish_time'])
-
-category_colors = [f'hsl({h},50%,50%)' for h in np.linspace(0, 360, 30)]
-
 
 week_data = us_data.copy()
 week_data['week_day'] = week_data['trending_date'].dt.weekday
@@ -54,7 +53,7 @@ def display_fig1():
             r=data['trend_count'],
             theta=data.index.astype(str),
             fill='toself',
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=True
         ))
@@ -67,7 +66,7 @@ def display_fig1():
             r=np.log10(1 + data['trend_count']),
             theta=data.index.astype(str),
             fill='toself',
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=False
         ))
@@ -80,7 +79,7 @@ def display_fig1():
             r=data['percentage'] * 100,
             theta=data.index.astype(str),
             fill='toself',
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=False
         ))
@@ -142,7 +141,7 @@ def display_fig2():
             r=data['trend_count'],
             theta=data.index.astype(str),
             fill='toself',
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=True
         ))
@@ -155,7 +154,7 @@ def display_fig2():
             r=np.log10(1 + data['trend_count']),
             theta=data.index.astype(str),
             fill='toself',
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=False
         ))
@@ -168,7 +167,7 @@ def display_fig2():
             r=data['percentage'] * 100,
             theta=data.index.astype(str),
             fill='toself',
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=False
         ))
@@ -231,7 +230,7 @@ def display_fig3():
         traces.append(go.Scatter(
             x=data.index.astype(str),
             y=data['trend_count'],
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=True
         ))
@@ -243,7 +242,7 @@ def display_fig3():
         traces.append(go.Scatter(
             x=data.index.astype(str),
             y=np.log10(1 + data['trend_count']),
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=False
         ))
@@ -255,7 +254,7 @@ def display_fig3():
         traces.append(go.Scatter(
             x=data.index.astype(str),
             y=data['percentage'] * 100,
-            marker_color=category_colors[i],
+            marker_color=CATEGORY_COLORS[i],
             name=categories[i],
             visible=False
         ))
@@ -300,6 +299,7 @@ def display_fig3():
 
 layout = html.Div([
     html.H3('Métricas por período', style={"textAlign": "center"}),
+    html.P('Coloque aqui uma breve descrição da visualização, como interagir e insights.'),
     dcc.Graph(id='radar-dia-semana', figure=display_fig1()),
     dcc.Graph(id='radar-dia-mes', figure=display_fig2()),
     dcc.Graph(id='linhas-mes-ano', figure=display_fig3())

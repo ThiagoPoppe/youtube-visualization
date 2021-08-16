@@ -6,12 +6,14 @@ import pathlib
 
 import plotly.graph_objects as go
 
+from .constants import CATEGORY_COLORS
+
 # Insira aqui o caminho para os dados processados!
 #BASEPATH = './'
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
 
-PREFIX_TITLE = 'Métrica selecionada: '
+PREFIX_TITLE = 'Analisando métrica: '
 
 us_data = pd.read_csv(DATA_PATH.joinpath("USdata.csv"), parse_dates=['trending_date', 'publish_time'])
 
@@ -21,8 +23,6 @@ metrics = ['views', 'likes', 'dislikes', 'comment_count']
 grouped_data = us_data.groupby(['trending_date','category_name'])[metrics]
 grouped_data = grouped_data.sum()
 grouped_data = grouped_data.reset_index()
-
-category_colors = [f'hsl({h},50%,50%)' for h in np.linspace(0, 360, 30)]
 
 def get_visibility(idx, n=8, n_categories=16):
     """ Função auxiliar para retornar uma lista de visibilidade para os filtros """
@@ -48,7 +48,7 @@ for mode in modes:
             data = grouped_data[grouped_data['category_name'] == categories[i]]
             traces.append(go.Bar(
                 name = categories[i],
-                marker_color = category_colors[i],
+                marker_color = CATEGORY_COLORS[i],
                 x = data['trending_date'],
                 y = data[metric] if mode == 'linear' else np.log10(1+data[metric]),
                 visible = True if mode == 'linear' and metric == 'views' else False
@@ -104,7 +104,7 @@ fig.update_layout(
 
 layout = html.Div([
     html.H3('Somatório diário das métricas por categoria'),
-    html.P('Selecione uma métrica e escala'),
+    html.P('Coloque aqui uma breve descrição da visualização, como interagir e insights.'),
     html.Div([
         dcc.Graph(id='sumario-metricas', figure=fig)
     ], style={'display': 'inline-block', 'vertical-align': 'middle'})
