@@ -1,9 +1,9 @@
-from dash_core_components.Graph import Graph
 import numpy as np
 import pandas as pd
 import dash_core_components as dcc
 import dash_html_components as html
 import pathlib
+import plotly
 
 import plotly.express as px
 import plotly.graph_objects as go
@@ -25,6 +25,9 @@ us_data = us_data.reset_index(drop=True)
 categories = us_data[['category_name']].drop_duplicates().reset_index(drop=True)
 categories['category_id'] = range(1, len(categories)+1)
 
+categories = categories.sort_values('category_id', ascending=False)
+categories = categories[['category_id', 'category_name']]
+
 us_data = us_data.drop('category_id', axis=1)
 us_data = us_data.merge(categories)
 
@@ -32,7 +35,8 @@ def display_full_fig():
     fig = px.parallel_coordinates(
         us_data,
         color='category_id',
-        dimensions=['views', 'likes', 'dislikes', 'comment_count', 'category_id']
+        dimensions=['views', 'likes', 'dislikes', 'comment_count', 'category_id'],
+        color_continuous_scale=plotly.colors.sequential.Plasma
     )
 
     return fig
