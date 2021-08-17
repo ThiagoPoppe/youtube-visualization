@@ -1,10 +1,13 @@
+from dash_core_components.Graph import Graph
 import numpy as np
 import pandas as pd
 import dash_core_components as dcc
 import dash_html_components as html
 import pathlib
 
+import plotly.express as px
 import plotly.graph_objects as go
+import plotly.figure_factory as ff
 
 from .constants import CATEGORY_COLORS
 
@@ -16,6 +19,32 @@ DATA_PATH = PATH.joinpath("../datasets").resolve()
 PREFIX_TITLE = 'Analisando vídeos da categoria: '
 
 us_data = pd.read_csv(DATA_PATH.joinpath("USdata.csv"), parse_dates=['trending_date', 'publish_time'])
+us_data = us_data.groupby(['category_name', 'video_id']).apply(lambda df: df.iloc[-1])
+us_data = us_data.reset_index(drop=True)
+
+categories = us_data[['category_name']].drop_duplicates().reset_index(drop=True)
+categories['category_id'] = range(1, len(categories)+1)
+
+us_data = us_data.drop('category_id', axis=1)
+us_data = us_data.merge(categories)
+
+def display_full_fig():
+    fig = px.parallel_coordinates(
+        us_data,
+        color='category_id',
+        dimensions=['views', 'likes', 'dislikes', 'comment_count', 'category_id']
+    )
+
+    return fig
+
+def display_category_table():
+    fig = ff.create_table(categories)
+    fig.update_layout(
+        width=300,
+        height=400
+    )
+
+    return fig
 
 def display_fig():
     categories = sorted(us_data['category_name'].unique())
@@ -80,6 +109,10 @@ layout = html.Div([
     html.H3('Formato das Métricas'),
     html.P('Coloque aqui uma breve descrição da visualização, como interagir e insights.'),
     html.Div([
+        html.Div([
+            dcc.Graph(id='metricas-geral', figure=display_full_fig()),
+            dcc.Graph(id='categorias-nome', figure=display_category_table())
+        ], style={'display': 'flex', 'flex-direction': 'row'}),
         dcc.Graph(id='formato-metricas', figure=display_fig())
     ], style={'display': 'inline-block', 'vertical-align': 'middle'})
 ])
