@@ -114,7 +114,7 @@ layout = html.Div([
     html.P('Coloque aqui uma breve descrição da visualização, como interagir e insights.'),
     html.Div([
         html.Div([
-            dcc.Graph(id='metricas-geral', figure=display_full_fig()),
+            dcc.Graph(id='metricas-geral', figure=display_full_fig(), style={'width': '100%'}),
             dcc.Graph(id='categorias-nome', figure=display_category_table())
         ], style={'display': 'flex', 'flex-direction': 'row'}),
         dcc.Graph(id='formato-metricas', figure=display_fig())
